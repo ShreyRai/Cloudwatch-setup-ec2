@@ -55,7 +55,7 @@ jobs:
             - name: Connect to OIDC
               uses: aws-actions/configure-aws-credentials@v4
               with:
-                role-to-assume: arn:aws:iam::339713025091:role/terraform-enterprise-s3-role-1
+                role-to-assume: arn:aws:iam::767398111127:role/terraform-enterprise-s3-role-1
                 aws-region: us-east-1
             - name: Checks
               working-directory: EC2

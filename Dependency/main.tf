@@ -38,3 +38,8 @@ resource "aws_iam_role" "github_actions_role" {
     ]
   })
 }
+
+resource "aws_s3_bucket" "statebucket" {
+    bucket = "tf-state-enterprise-grade-bucket"
+  
+}
