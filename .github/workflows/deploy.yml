@@ -25,8 +25,9 @@ jobs:
               working-directory: Dependency
               run: |
                 terraform fmt -check
-                terraform validate
                 terraform init
+                terraform validate
+                
             - name: Apply
               working-directory: Dependency
               continue-on-error: true
@@ -43,6 +44,7 @@ jobs:
               working-directory: EC2
               run: |
                 terraform fmt -check
+                terraform init
                 terraform validate
     Deploy:
         runs-on: ubuntu-latest
