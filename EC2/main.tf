@@ -3,41 +3,47 @@ terraform {
     bucket       = "tf-state-enterprise-grade-bucket"
     key          = "statefiles/dev/terraform.tfstate"
     region       = "us-east-1"
-    use_lockfile = true
+    use_lockfile = true  
     encrypt      = true
   }
 }
 
+# ============================================================
+# IAM ROLE
+# ============================================================
+
 resource "aws_iam_role" "iamrole1" {
   name = var.iam_role_name
-  assume_role_policy = jsonencode(
-    {
-        Version = "12-10-17"
-        Statement = [
-            {
-            Effect = "Allow"
-            Principal = {
-                Service = "ec2.amazonaws.com"
-            }
-            Action = "sts.assume.role"
-            }
-        ]
-    }
-  )
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
 }
+
+# Attach CloudWatch Agent policy
 resource "aws_iam_role_policy_attachment" "iampolicy1" {
-    role = aws_iam_role.iamrole1.name
-    policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
-    
+  role       = aws_iam_role.iamrole1.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
+# Instance Profile
 resource "aws_iam_instance_profile" "iamprofile1" {
-    role = aws_iam_role.iamrole1.name
-    name = var.instance_profile_name
-  
+  name = var.instance_profile_name
+  role = aws_iam_role.iamrole1.name
 }
 
-#============================================================
+# ============================================================
+# AMI DATA SOURCE
+# ============================================================
 
 data "aws_ami" "azlinux23" {
   most_recent = true
@@ -54,20 +60,24 @@ data "aws_ami" "azlinux23" {
   }
 }
 
+# ============================================================
+# EC2 INSTANCE
+# ============================================================
+
 resource "aws_instance" "web" {
-  ami           = data.aws_ami.azlinux23
+  ami           = data.aws_ami.azlinux23.id
   instance_type = "t2.micro"
 
-  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
+  iam_instance_profile = aws_iam_instance_profile.iamprofile1.name
 
   user_data = <<-EOF
               #!/bin/bash
-              yum update -y
+              dnf update -y
 
               # Install CloudWatch Agent
-              yum install -y amazon-cloudwatch-agent
+              dnf install -y amazon-cloudwatch-agent
 
-              # Create config file
+              # Create CloudWatch Agent config
               cat <<EOT > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
               {
                 "metrics": {
