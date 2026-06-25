@@ -6,7 +6,7 @@ on:
     pull_request:
 jobs:
     Dependency:
-        environment: dependency
+        #environment: dependency
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -22,11 +22,13 @@ jobs:
                 aws-region: us-east-1
 
             - name: Setup
+              working-directory: Dependency
               run: |
                 terraform fmt -check
                 terraform validate
                 terraform init
             - name: Apply
+              working-directory: Dependency
               continue-on-error: true
               run: terraform apply -auto-approve
     Checks:

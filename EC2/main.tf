@@ -10,15 +10,17 @@ terraform {
 
 resource "aws_iam_role" "iamrole1" {
   name = var.iam_role_name
-  assume_role_policy = jsondecode(
+  assume_role_policy = jsonencode(
     {
         Version = "12-10-17"
         Statement = [
+            {
             Effect = "Allow"
             Principal = {
-                Service = "ec2.amazon.com"
+                Service = "ec2.amazonaws.com"
             }
             Action = "sts.assume.role"
+            }
         ]
     }
   )
