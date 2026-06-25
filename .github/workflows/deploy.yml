@@ -5,8 +5,8 @@ on:
     workflow_dispatch:
     pull_request:
 env:
-        AWS_ACCESS_KEY = ${{ secrets.AWS_ACCESS_KEY }}
-        AWS_SECRET_KEY = ${{ secrets.AWS_SECRET_KEY }}
+    AWS_ACCESS_KEY = ${{ secrets.AWS_ACCESS_KEY }}
+    AWS_SECRET_KEY = ${{ secrets.AWS_SECRET_KEY }}
 jobs:
     Dependency:
         environment: dependency
@@ -16,11 +16,16 @@ jobs:
               uses: actions/checkout@v5
             - name: Setup Terraform
               uses: hashicorp/setup-terraform@v3
-            - name: Setup OIDC for other Jobs
+            
+            - name: Configure AWS Credentials
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+                aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+                aws-region: us-east-1
+
+            - name: Setup
               run: |
-                aws configure set aws_access_key_id ${{ env.AWS_ACCESS_KEY }} && \
-                aws configure set aws_secret_access_key ${{ env.AWS_SECRET_KEY }} && \
-                aws configure set default.region us-east-1
                 terraform fmt -check
                 terraform validate
                 terraform init
@@ -48,6 +53,11 @@ jobs:
               uses: actions/checkout@v5
             - name: Terraform setup
               uses: hashicorp/setup-terraform@v3
+            - name: Connect to OIDC
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                role-to-assume: arn:aws:iam::339713025091:role/terraform-enterprise-s3-role-1
+                aws-region: us-east-1
             - name: Checks
               working-directory: EC2
               run: |

@@ -11,7 +11,7 @@ resource "aws_iam_openid_connect_provider" "github" {
 }
 
 resource "aws_iam_role" "github_actions_role" {
-  name = "terraform-enterprise-s3-role"
+  name = "terraform-enterprise-s3-role-1"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

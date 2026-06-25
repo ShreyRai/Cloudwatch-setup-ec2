@@ -1,3 +1,13 @@
+terraform {
+  backend "s3" {
+    bucket       = "tf-state-enterprise-grade-bucket"
+    key          = "statefiles/dev/terraform.tfstate"
+    region       = "us-east-1"
+    use_lockfile = true
+    encrypt      = true
+  }
+}
+
 resource "aws_iam_role" "iamrole1" {
   name = var.iam_role_name
   assume_role_policy = jsondecode(
