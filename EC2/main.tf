@@ -27,7 +27,7 @@ resource "aws_iam_role" "iamrole1" {
 }
 resource "aws_iam_role_policy_attachment" "iampolicy1" {
     role = aws_iam_role.iamrole1.name
-    policy_arn = "arn:aws:iam:aws:policy/CloudWatchAgentServerPolicy"
+    policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
     
 }
 
