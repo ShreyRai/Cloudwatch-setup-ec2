@@ -1,0 +1,24 @@
+name: Cloudwatch enabling
+on: 
+    # push:
+    #     branches: [main]
+    workflow_dispatch:
+    pull_request:
+jobs:
+    Dependency:
+        runs-on: ubuntu-latest
+        env:
+            AWS_SECRET
+    Checks:
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout
+              uses: actions/checkout@v5
+            - name: Terraform setup
+              uses: hashicorp/setup-terraform@v3
+            - name: Checks
+              working-directory: EC2
+              run: |
+                terraform fmt -check
+                terraform validate
+                
