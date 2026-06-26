@@ -62,6 +62,11 @@ jobs:
               uses: terraform-linters/setup-tflint@v3
             - name: Linter
               run: tflint
+            - name: Run Checkov
+              uses: bridgecrewio/checkov-action@v12
+              with:
+                directory: .
+
             - name: Security Checks
               run: checkov -d .
 
