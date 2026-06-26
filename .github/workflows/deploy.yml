@@ -57,6 +57,9 @@ jobs:
 
             - name: Terraform Validate
               run: terraform validate
+            
+            - name: Setup TFLint
+              uses: terraform-linters/setup-tflint@v3
             - name: Linter
               run: tflint
             - name: Security Checks
