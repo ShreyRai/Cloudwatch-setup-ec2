@@ -57,6 +57,10 @@ jobs:
 
             - name: Terraform Validate
               run: terraform validate
+            - name: Linter
+              run: tflint
+            - name: Security Checks
+              run: checkov -d .
 
     Deploy:
         runs-on: ubuntu-latest

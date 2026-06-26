@@ -35,6 +35,11 @@ resource "aws_iam_role_policy_attachment" "iampolicy1" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
+resource "aws_iam_role_policy_attachment" "iampolicy2" {
+  role       = aws_iam_role.iamrole1.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMFullAccess"
+}
+
 # Instance Profile
 resource "aws_iam_instance_profile" "iamprofile1" {
   name = var.instance_profile_name
